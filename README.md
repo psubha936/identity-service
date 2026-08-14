@@ -26,6 +26,31 @@ npm start
 Copy `.env.example` to the ignored `.env` file only when overriding local
 configuration. The committed default already uses port `8081`.
 
+## Environment
+
+| Key | Required | Purpose |
+| --- | --- | --- |
+| `NODE_ENV` | No | Defaults to `development` |
+| `HOST` | No | Defaults to `0.0.0.0` |
+| `PORT` | No | Defaults to `8081` |
+| `MONGODB_URI` | Yes | Identity database connection string |
+| `MONGODB_DATABASE` | Yes | Identity database name |
+| `REDIS_URL` | Yes | Session, rate-limit, and authorization-cache connection |
+| `AWS_PROFILE` | Local only | Named AWS CLI profile; deployed workloads should use an IAM role |
+| `AWS_REGION` | Yes | Region shared by Cognito and S3 |
+| `COGNITO_USER_POOL_ID` | Yes | Cognito user pool |
+| `COGNITO_APP_CLIENT_ID` | Yes | Server-side Cognito app client |
+| `COGNITO_APP_CLIENT_SECRET` | Only when configured | Secret for a Cognito app client that has one |
+| `AWS_S3_DEFAULT_BUCKET` | Yes | Identity-owned profile/avatar bucket |
+| `AWS_ACCESS_KEY_ID` | No | Optional local AWS credential-chain input |
+| `AWS_SECRET_ACCESS_KEY` | No | Required only with an explicit access-key ID |
+| `AWS_SESSION_TOKEN` | No | Required only for temporary explicit credentials |
+
+Prefer a short-lived AWS CLI/Identity Center profile during local development and
+an IAM role in deployed environments. The AWS SDK reads those through its standard
+credential provider chain, so long-lived AWS keys do not need to be stored in
+`.env`. Never commit the real `.env` file or log these values.
+
 ## Source layout
 
 ```text
