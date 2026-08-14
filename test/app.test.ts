@@ -5,8 +5,21 @@ import { createApp } from "../src/app.js";
 import { loadServiceConfig } from "../src/config/service-config.js";
 import { ErrorCode } from "../src/enums/error-code.enum.js";
 
+const testEnvironment: NodeJS.ProcessEnv = {
+  NODE_ENV: "test",
+  HOST: "127.0.0.1",
+  PORT: "8081",
+  MONGODB_URI: "mongodb://localhost:27017",
+  MONGODB_DATABASE: "foodpulse_identity_test",
+  REDIS_URL: "redis://localhost:6379",
+  AWS_REGION: "ap-south-1",
+  COGNITO_USER_POOL_ID: "ap-south-1_test",
+  COGNITO_APP_CLIENT_ID: "test-client-id",
+  AWS_S3_DEFAULT_BUCKET: "foodpulse-identity-test",
+};
+
 test("health and error responses use the common API contract", async (context) => {
-  const config = loadServiceConfig();
+  const config = loadServiceConfig(testEnvironment);
   const server = createApp(config).listen(0, "127.0.0.1");
   await new Promise<void>((resolve) => server.once("listening", resolve));
   context.after(() => new Promise<void>((resolve, reject) => {
