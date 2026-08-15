@@ -1,10 +1,16 @@
 import type { Server } from "node:http";
 import { createApp } from "./app.js";
 import { loadServiceConfig } from "./config/service-config.js";
+import { connectIdentityInfrastructure } from "./infrastructure/identity-infrastructure.js";
+import { createRoleService } from "./services/role.service.js";
 
 export async function bootstrap(): Promise<Server> {
   const config = loadServiceConfig();
-  const app = createApp(config);
+  const infrastructure = await connectIdentityInfrastructure(config);
+  const app = createApp(config, {
+    infrastructure,
+    roleService: createRoleService(infrastructure.mongo.db),
+  });
 
   const server = app.listen(config.port, config.host, () => {
     console.info(
@@ -42,6 +48,11 @@ export async function bootstrap(): Promise<Server> {
         console.error(error);
         process.exitCode = 1;
       }
+
+      void infrastructure.close().catch((closeError: unknown) => {
+        console.error(closeError);
+        process.exitCode = 1;
+      });
     });
   };
 

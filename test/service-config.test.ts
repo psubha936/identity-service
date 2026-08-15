@@ -7,6 +7,7 @@ const validEnvironment: NodeJS.ProcessEnv = {
   MONGODB_URI: "mongodb://localhost:27017",
   MONGODB_DATABASE: "foodpulse_identity_test",
   REDIS_URL: "redis://localhost:6379",
+  KAFKA_BROKERS: "localhost:9092, localhost:9093",
   AWS_REGION: "ap-south-1",
   COGNITO_USER_POOL_ID: "ap-south-1_test",
   COGNITO_APP_CLIENT_ID: "test-client-id",
@@ -19,6 +20,7 @@ test("loads required identity integrations without explicit AWS credentials", ()
   assert.equal(config.port, 8081);
   assert.equal(config.mongodb.databaseName, "foodpulse_identity_test");
   assert.equal(config.redis.url, "redis://localhost:6379");
+  assert.deepEqual(config.kafka.brokers, ["localhost:9092", "localhost:9093"]);
   assert.equal(config.aws.region, "ap-south-1");
   assert.equal(config.aws.cognitoAppClientSecret, undefined);
 });
