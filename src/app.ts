@@ -5,6 +5,7 @@ import type { IdentityInfrastructure } from "./infrastructure/identity-infrastru
 import { errorHandler } from "./middleware/error-handler.middleware.js";
 import { notFoundHandler } from "./middleware/not-found.middleware.js";
 import { requestContext } from "./middleware/request-context.middleware.js";
+import { requestLogger } from "./middleware/request-logger.middleware.js";
 import { createSystemRouter } from "./routes/system.routes.js";
 import { createRoleRouter } from "./routes/role.routes.js";
 import type { RoleService } from "./services/role.service.js";
@@ -25,6 +26,7 @@ export function createApp(
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: false, limit: "1mb" }));
   app.use(requestContext);
+  app.use(requestLogger);
   app.use(createSystemRouter(config, dependencies.infrastructure));
   if (dependencies.roleService) app.use(createRoleRouter(dependencies.roleService));
   app.use(notFoundHandler);
