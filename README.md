@@ -8,6 +8,7 @@ Authentication, users, JWT, RBAC
 - Express 5
 - Default local port: `8081`
 - Health endpoints: `GET /health` and `GET /ready`
+- Role administration endpoint: `POST /roles` (normally called through the proxy)
 
 The shared workspace port registry is stored at
 `implementation/SERVICE_PORTS.md` from the FoodPulse workspace root.
@@ -36,6 +37,8 @@ configuration. The committed default already uses port `8081`.
 | `MONGODB_URI` | Yes | Identity database connection string |
 | `MONGODB_DATABASE` | Yes | Identity database name |
 | `REDIS_URL` | Yes | Session, rate-limit, and authorization-cache connection |
+| `KAFKA_BROKERS` | Yes | Comma-separated Kafka bootstrap servers |
+| `KAFKA_CLIENT_ID` | No | Defaults to `identity-service` |
 | `AWS_PROFILE` | Local only | Named AWS CLI profile; deployed workloads should use an IAM role |
 | `AWS_REGION` | Yes | Region shared by Cognito and S3 |
 | `COGNITO_USER_POOL_ID` | Yes | Cognito user pool |
@@ -68,4 +71,12 @@ src/
 
 Build output is written to `dist/`. Error responses have one common shape and
 include the `x-request-id` value for tracing. Domain routes and external client
-connections are intentionally left for the corresponding service implementation.
+connections use the shared `@subhaprakash/foodpulse-clients` package.
+
+Create a custom role through the public proxy:
+
+```bash
+curl -X POST http://127.0.0.1:8080/api/v1/identity/roles \
+  -H 'content-type: application/json' \
+  -d '{"code":"restaurant_support","name":"Restaurant support","description":"Supports restaurant accounts","permissions":["restaurant.read","identity.user.read"]}'
+```

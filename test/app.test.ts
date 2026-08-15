@@ -12,6 +12,7 @@ const testEnvironment: NodeJS.ProcessEnv = {
   MONGODB_URI: "mongodb://localhost:27017",
   MONGODB_DATABASE: "foodpulse_identity_test",
   REDIS_URL: "redis://localhost:6379",
+  KAFKA_BROKERS: "localhost:9092",
   AWS_REGION: "ap-south-1",
   COGNITO_USER_POOL_ID: "ap-south-1_test",
   COGNITO_APP_CLIENT_ID: "test-client-id",

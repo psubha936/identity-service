@@ -12,6 +12,11 @@ export interface RedisConfig {
   url: string;
 }
 
+export interface KafkaConfig {
+  brokers: string[];
+  clientId: string;
+}
+
 export interface AwsConfig {
   region: string;
   cognitoUserPoolId: string;
@@ -27,6 +32,7 @@ export interface ServiceConfig {
   port: number;
   mongodb: MongoConfig;
   redis: RedisConfig;
+  kafka: KafkaConfig;
   aws: AwsConfig;
 }
 
@@ -80,6 +86,16 @@ function parsePort(value: string | undefined): number {
   return port;
 }
 
+function parseCsv(environment: NodeJS.ProcessEnv, key: string): string[] {
+  const values = requireValue(environment, key)
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  if (values.length === 0) throw new Error(`${key} must contain at least one value`);
+  return values;
+}
+
 export function loadServiceConfig(
   environment: NodeJS.ProcessEnv = process.env,
 ): ServiceConfig {
@@ -99,6 +115,10 @@ export function loadServiceConfig(
     },
     redis: {
       url: requireValue(environment, "REDIS_URL"),
+    },
+    kafka: {
+      brokers: parseCsv(environment, "KAFKA_BROKERS"),
+      clientId: optionalValue(environment.KAFKA_CLIENT_ID) ?? SERVICE_NAME,
     },
     aws: {
       region: requireValue(environment, "AWS_REGION"),
