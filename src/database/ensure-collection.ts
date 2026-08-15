@@ -14,14 +14,7 @@ export async function ensureCollection(
     .listCollections({ name: definition.name }, { nameOnly: true })
     .hasNext();
 
-  if (exists) {
-    await db.command({
-      collMod: definition.name,
-      validator: definition.validator,
-      validationLevel: "strict",
-      validationAction: "error",
-    });
-  } else {
+  if (!exists) {
     await db.createCollection(definition.name, {
       validator: definition.validator,
       validationLevel: "strict",
@@ -31,4 +24,3 @@ export async function ensureCollection(
 
   await db.collection(definition.name).createIndexes([...definition.indexes]);
 }
-
