@@ -63,6 +63,7 @@ src/
 ├── errors/       # typed operational errors
 ├── middleware/   # request IDs, 404 handling, and centralized errors
 ├── routes/       # health/readiness and future service routes
+├── utils/        # request parsing and validation helpers
 ├── types/        # API response contracts
 ├── app.ts        # Express composition without opening a port
 ├── bootstrap.ts  # HTTP server startup and graceful shutdown

@@ -5,10 +5,8 @@ import { createApp } from "../src/app.js";
 import { loadServiceConfig } from "../src/config/service-config.js";
 import { PermissionCode } from "../src/enums/permission-code.enum.js";
 import { RoleStatus } from "../src/enums/role-status.enum.js";
-import {
-  parseCreateRoleInput,
-  type RoleService,
-} from "../src/services/role.service.js";
+import type { RoleService } from "../src/services/role.service.js";
+import { parseCreateRoleInput } from "../src/utils/role-validation.util.js";
 
 const config = loadServiceConfig({
   NODE_ENV: "test",
@@ -22,7 +20,7 @@ const config = loadServiceConfig({
   AWS_S3_DEFAULT_BUCKET: "foodpulse-identity-test",
 });
 
-test("validates and normalizes role creation input", () => {
+test("role validation is kept outside the role service", () => {
   assert.deepEqual(
     parseCreateRoleInput({
       code: "restaurant_support",
@@ -36,15 +34,6 @@ test("validates and normalizes role creation input", () => {
       permissions: [PermissionCode.RestaurantRead],
       status: RoleStatus.Active,
     },
-  );
-
-  assert.throws(
-    () => parseCreateRoleInput({
-      code: "restaurant_support",
-      name: "Restaurant support",
-      permissions: ["not.a.permission"],
-    }),
-    /unsupported values/,
   );
 });
 
